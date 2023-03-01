@@ -2,7 +2,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include <stdlib.h>0
+#include <stdlib.h>
 
 int main(void){
 	
@@ -27,19 +27,19 @@ int main(void){
         exit(1);
     }
 
+    fprintf(file, "Process are listed as follows: parentPID,ChildPID\n");
     for (i = 0; i<number; i++){
         fflush(file);
-        fprintf(file, "Process are listed as follows: parentPID,ChildPID");
         if(fork() != 0 ){
             //Parent
              waitpid(-1, NULL, 0);
         }else{
             //Child
-            fprintf(file, "%d," getppid());
-            fprintf(file, "%d\n", getpid());
+            fprintf(file, "%d,", getpid());
+            fprintf(file, "%d\n", getppid());
         }
-
+    }
     fclose(file);
     return(0);
+    
 }
-
