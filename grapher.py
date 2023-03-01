@@ -1,44 +1,51 @@
 import graphviz
 
+#global root value
 global root
 
-def build_tree(processes, parent):
+def build_tree(nodes, parent, distance = 0):
 
-    if parent not in processes:
+    #error checking
+    if parent not in nodes:
         return None
 
     tree = graphviz.Digraph()
-    tree.node(parent)
+    #a formatted string which combines the pid with the distance
+    label = f"{parent}\nLevel: {distance}"
+    tree.node(parent, label=label)
 
-    for child in processes[parent]:
-        tree.node(child)
+    for child in nodes[parent]:
+        child_level = distance + 1
+        tree.node(child, label=f"{child}\nLevel: {child_level}")
         tree.edge(parent, child)
-        sub_tree = build_tree(processes, child)
+        sub_tree = build_tree(nodes, child, child_level)
+        #recursive call
         if sub_tree:
             tree.subgraph(sub_tree)
     return tree
 
+#function to parse a file. It also assigns the root.
 def parse_file(file_path):
     global root
     root = None
-    processes = {}
+    nodes = {}
     with open(file_path, 'r') as file:
+        #skip the first line of the file
         next(file)
         for line in file:
-            print(line)
             child, parent = line.strip().split(',')
+            #assign the root here
             if root is None:
                 root = parent
 
-            if parent not in processes:
-                processes[parent] = []
-            processes[parent].append(child)
-        return processes
+            if parent not in nodes:
+                nodes[parent] = []
+            nodes[parent].append(child)
+        return nodes
 
 if __name__ == '__main__':
 
-    file_path = 'input.txt'
-    processes = parse_file(file_path)
-    print(root)
-    tree = build_tree(processes, root)
+    file_path = 'input_n_5'
+    nodes = parse_file(file_path)
+    tree = build_tree(nodes, root,0)
     tree.render(view=True)
