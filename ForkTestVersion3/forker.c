@@ -1,14 +1,12 @@
 #include <stdio.h>
-#include <unistd.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 int main(void){
 	
     int number;
     int i;
-
-    pid_t pid;
-    pid_t ppid;
+    int level =0;
 
     char filename[50];
 
@@ -25,7 +23,7 @@ int main(void){
         exit(1);
     }
 
-    fprintf(file, "Process are listed as follows: parentPID,ChildPID\n");
+    fprintf(file, "Process are listed as follows: ChildPID,ParentPID\n");
     for (i = 0; i<number; i++){
         fflush(file);
         if(fork() != 0 ){
@@ -33,6 +31,8 @@ int main(void){
              waitpid(-1, NULL, 0);
         }else{
             //Child
+            (level++);
+            fprintf(file, "Level: %d,", level);
             fprintf(file, "%d,", getpid());
             fprintf(file, "%d\n", getppid());
         }

@@ -30,7 +30,10 @@ int main(void){
         fflush(file);
         if(fork() != 0 ){
             //Parent
-             waitpid(-1, NULL, 0);
+            //waitpid first arg -1 Wait for ANY child process. 0 Wait for any child process whose group ID is equal to calling process. >0 Wait for the child whose process IP is equal to pid
+            //???
+             waitpid(0, NULL, 0);
+             break;
         }else{
             //Child
             fprintf(file, "%d,", getpid());
